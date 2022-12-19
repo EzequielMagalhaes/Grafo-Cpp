@@ -3,7 +3,7 @@
 #include<stdlib.h> //Standard Library para usar o comando de limpar a tela (system("cls"))
 int Menu(){
   system("cls");
-  printf("\n ====== MENU DE CONTROLE =====")
+  printf("\n ====== MENU DE CONTROLE =====");
 }
 
 int main(){
