@@ -1,8 +1,8 @@
 #include<stdio.h> //Biblioteca para entrada e saida de comandos (printf e scanf) Standard Input/Output
-#include<conio.h> //Include é uma diretiva de compilacao para carregar uma biblioteca no codigo fonte
+#include<conio.h> //Include  uma diretiva de compilacao para carregar uma biblioteca no codigo fonte
 #include<stdlib.h> //Standard Library para usar o comando de limpar a tela (system("cls"))
 
-int tamanho; // Precisa ser uma variavel global para controlar o tamanho do grafo que será usada em várias funcões;
+int tamanho; // Precisa ser uma variavel global para controlar o tamanho do grafo que sera usada em varias funcões;
 int matriz[100][100];
 int Menu(){
   system("cls"); //Passando comando de limpara a tela para o sistema operacional(CLS:Clear Screen);
@@ -37,7 +37,7 @@ void ImprimirMatriz(){
       }
   printf("\n");
   printf("\n\n Pressione uma tecla para prosseguir...\n");
-  getch();
+  getch(); //Comando para guardar o pressionamento de uma tecla (na biblioteca conio.h)
 }
 
 void GravarValor(int A, int B, int C){
@@ -49,11 +49,14 @@ void GravarValor(int A, int B, int C){
 
 int main(){ //Programa principal;
 	int resposta,vlr,lin,col;
+  lin = -1; //só por segurança pra nao haver nenhum lixo de memoria que comprometa o grafico;
+  col = -1;
+  char confirma; //Para confirmar a sobreposião de valores das arestas da matriz;
 	do{
 		resposta = Menu();
 		if (resposta == 1){ //Inicializar a matriz na memória limpando as arestas (valor zero);
 			printf("\n Informe o tamanho do grafo: ");
-			scanf("%i",&tamanho); // %i serve para informar que o valor de entrada é do tipo i: inteiro; f:float;
+			scanf("%i",&tamanho); // %i serve para informar que o valor de entrada  do tipo i: inteiro; f:float;
       LimparMatriz();
 			printf("\n Matriz inicializada com sucesso (Tamanho da matriz: %i)", tamanho);
 			printf("\n\n Pressione uma tecla para prosseguir...\n");
@@ -63,16 +66,49 @@ int main(){ //Programa principal;
       ImprimirMatriz();
     }
     else if(resposta == 3){ //Inserir valor na matriz
-      printf("Informe a posicao da linha: ");  // Pedindo dados;
+      do{
+        //Camada de regras de negócio
+      if((lin == col) & (lin > 0))
+        printf(" A linha e a coluna nao podem ter o mesmo valor!\n");
+      if(lin > tamanho)
+        printf(" A linha informada esta fora da matriz!\n");
+      if(col > tamanho)
+        printf(" A coluna informada esta fora da matriz!\n");
+      
+        //Fim da camada de regras de negócio
+      printf(" Informe a posicao da linha: ");  // Pedindo dados;
       scanf("%i",&lin);                        // Capurando o valor informado para a linha;
-      printf("Informe a posicao da coluna: "); // Pedindo dados;
+      printf(" Informe a posicao da coluna: "); // Pedindo dados;
       scanf("%i",&col);                        // Capurando o valor informado para a coluna;
-      printf("Informe o valor da Aresta: ");   // Pedindo dados;
+      if(matriz[lin][col] > 0) {
+        printf(" A posicao [%i][%i] ja contem o valor %i!\n",lin,col,matriz[lin][col]);
+        printf(" Confirmar sobreposicao?! (S/N)");
+        scanf("%s",&confirma); // %s -> pega a variavel do tipo caractere(char);
+        if(confirma == 'N' | confirma == 'n'){
+          printf("\n");
+          printf("\n\n Pressione uma tecla para prosseguir...\n");
+          return(resposta);
+        }
+        else if(confirma == 'S' | confirma == 's'){
+          do{
+            printf(" Informe um valor positivo para a Aresta: ");   // Pedindo dados;
+            scanf("%i",&vlr);                        // Capurando o valor informado para o peso;
+          }while(vlr <= 0);
+            GravarValor(lin,col,vlr);
+            lin = -1; //Limpando o conteudo das variaveis linha e coluna para as proximas rodadas do programa;
+            col = -1;
+            printf("Novo valor gravado com sucesso!");
+        }
+      }
+      }while ((lin == col) | (lin > tamanho) | (col > tamanho)); //Diferença de um & pra && -> com dois &&, se a primeira falhar ele nem testa as demais; Com um &, ele vai ate o final;
+      do{
+      printf(" Informe um valor positivo para a Aresta: ");   // Pedindo dados;
       scanf("%i",&vlr);                        // Capurando o valor informado para o peso;
+      }while(vlr <= 0);
       GravarValor(lin,col,vlr);
+      lin = -1; //Limpando o conteudo das variaveis linha e coluna para as proximas rodadas do programa;
+      col = -1;
     }
 	}while(resposta != 6);
-
-  	
-	getch(); //Comando para guardar o pressionamento de uma tecla (na biblioteca conio.h)
+  getch();
 }
